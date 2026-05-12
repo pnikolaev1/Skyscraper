@@ -1,0 +1,147 @@
+[gd_scene load_steps=3 format=3 uid="uid://b6menu00001"]
+
+[ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="1_menu"]
+[ext_resource type="PackedScene" uid="uid://b6skyback01" path="res://scenes/skyline_background.tscn" id="2_sky"]
+
+[node name="MainMenu" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_menu")
+
+[node name="SkylineBackground" parent="." instance=ExtResource("2_sky")]
+
+[node name="BackgroundTower" type="Node2D" parent="."]
+
+[node name="TitlePanel" type="PanelContainer" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -380.0
+offset_top = 70.0
+offset_right = 380.0
+offset_bottom = 230.0
+
+[node name="Title" type="Label" parent="TitlePanel"]
+text = "SKYSCRAPER"
+horizontal_alignment = 1
+vertical_alignment = 1
+theme_override_font_sizes/font_size = 96
+theme_override_colors/font_color = Color(1, 0.95, 0.45, 1)
+theme_override_colors/font_outline_color = Color(0.05, 0.10, 0.30, 1)
+theme_override_constants/outline_size = 8
+
+[node name="Subtitle" type="Label" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -360.0
+offset_top = 270.0
+offset_right = 360.0
+offset_bottom = 320.0
+text = "Stack the city to the sky."
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 28
+theme_override_colors/font_color = Color(1, 0.98, 0.85, 1)
+theme_override_colors/font_outline_color = Color(0.05, 0.10, 0.30, 0.85)
+theme_override_constants/outline_size = 4
+
+[node name="Center" type="CenterContainer" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = -60.0
+offset_right = 240.0
+offset_bottom = 320.0
+
+[node name="VBox" type="VBoxContainer" parent="Center"]
+theme_override_constants/separation = 18
+
+[node name="Play" type="Button" parent="Center/VBox"]
+custom_minimum_size = Vector2(420, 80)
+text = "Play"
+theme_override_font_sizes/font_size = 36
+
+[node name="Cosmetics" type="Button" parent="Center/VBox"]
+custom_minimum_size = Vector2(420, 70)
+text = "Cosmetics"
+theme_override_font_sizes/font_size = 28
+
+[node name="Leaderboard" type="Button" parent="Center/VBox"]
+custom_minimum_size = Vector2(420, 70)
+text = "Leaderboard"
+theme_override_font_sizes/font_size = 28
+
+[node name="Settings" type="Button" parent="Center/VBox"]
+custom_minimum_size = Vector2(420, 70)
+text = "Settings"
+theme_override_font_sizes/font_size = 28
+
+[node name="Quit" type="Button" parent="Center/VBox"]
+custom_minimum_size = Vector2(420, 70)
+text = "Quit"
+theme_override_font_sizes/font_size = 28
+
+[node name="SettingsPanel" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Dim" type="ColorRect" parent="SettingsPanel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.6)
+
+[node name="Panel" type="PanelContainer" parent="SettingsPanel"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -320.0
+offset_top = -200.0
+offset_right = 320.0
+offset_bottom = 200.0
+
+[node name="VBox" type="VBoxContainer" parent="SettingsPanel/Panel"]
+theme_override_constants/separation = 20
+
+[node name="Title" type="Label" parent="SettingsPanel/Panel/VBox"]
+text = "Settings"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 42
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+
+[node name="Music" type="HBoxContainer" parent="SettingsPanel/Panel/VBox"]
+
+[node name="Label" type="Label" parent="SettingsPanel/Panel/VBox/Music"]
+custom_minimum_size = Vector2(140, 0)
+text = "Music"
+theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+
+[node name="Slider" type="HSlider" parent="SettingsPanel/Panel/VBox/Music"]
+custom_minimum_size = Vector2(380, 40)
+max_value = 1.0
+step = 0.05
+
+[node name="SFX" type="HBoxContainer" parent="SettingsPanel/Panel/VBox"]
+
+[node name="Label" type="Label" parent="SettingsPanel/Panel/VBox/SFX"]
+custom_minimum_size = Vector2(140, 0)
+text = "SFX"
+theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+
+[node name="Slider" type="HSlider" parent="SettingsPanel/Panel/VBox/SFX"]
+custom_minimum_size = Vector2(380, 40)
+max_value = 1.0
+step = 0.05
+
+[node name="Close" type="Button" parent="SettingsPanel/Panel/VBox"]
+custom_minimum_size = Vector2(220, 60)
+text = "Close"
+theme_override_font_sizes/font_size = 26
+
+[node name="Fade" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 1)
+mouse_filter = 2

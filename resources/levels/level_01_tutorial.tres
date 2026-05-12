@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="LevelData" load_steps=2 format=3 uid="uid://b6lvl000001"]
+
+[ext_resource type="Script" path="res://resources/level_data.gd" id="1_lvl"]
+
+[resource]
+script = ExtResource("1_lvl")
+id = "level_01_tutorial"
+display_name = "Tutorial"
+target_height = 10
+score_goal = 800
+time_limit = 0.0
+intro_text = "Click or press SPACE to drop the floor.
+Aim for perfect alignment to build your combo!"
+hazards = []
+star_thresholds = PackedFloat32Array(1, 1.5, 2)

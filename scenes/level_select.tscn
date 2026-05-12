@@ -1,0 +1,60 @@
+[gd_scene load_steps=3 format=3 uid="uid://b6lvlsel001"]
+
+[ext_resource type="Script" path="res://scripts/ui/level_select.gd" id="1_lvl"]
+[ext_resource type="PackedScene" uid="uid://b6skyback01" path="res://scenes/skyline_background.tscn" id="2_sky"]
+
+[node name="LevelSelect" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_lvl")
+
+[node name="SkylineBackground" parent="." instance=ExtResource("2_sky")]
+
+[node name="Title" type="Label" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 60.0
+offset_right = 300.0
+offset_bottom = 150.0
+text = "Levels"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 64
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.6)
+theme_override_constants/outline_size = 6
+
+[node name="Center" type="Control" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -780.0
+offset_top = -240.0
+offset_right = 780.0
+offset_bottom = 320.0
+
+[node name="Scroll" type="ScrollContainer" parent="Center"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+horizontal_scroll_mode = 0
+
+[node name="Grid" type="GridContainer" parent="Center/Scroll"]
+custom_minimum_size = Vector2(1500, 0)
+columns = 4
+theme_override_constants/h_separation = 24
+theme_override_constants/v_separation = 24
+
+[node name="Back" type="Button" parent="."]
+offset_left = 30.0
+offset_top = 24.0
+offset_right = 200.0
+offset_bottom = 84.0
+text = "← Back"
+theme_override_font_sizes/font_size = 26
+
+[node name="Fade" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 1)
+mouse_filter = 2

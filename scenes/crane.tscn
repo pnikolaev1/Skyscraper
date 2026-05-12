@@ -1,0 +1,56 @@
+[gd_scene load_steps=2 format=3 uid="uid://b6cran3001"]
+
+[ext_resource type="Script" path="res://scripts/gameplay/crane.gd" id="1_crane"]
+
+[node name="Crane" type="Node2D"]
+script = ExtResource("1_crane")
+
+[node name="Beam" type="Node2D" parent="."]
+
+[node name="Left" type="ColorRect" parent="Beam"]
+offset_left = -180.0
+offset_top = -8.0
+offset_right = 0.0
+offset_bottom = 8.0
+color = Color(0.20, 0.22, 0.27, 1)
+
+[node name="Right" type="ColorRect" parent="Beam"]
+offset_left = 0.0
+offset_top = -8.0
+offset_right = 180.0
+offset_bottom = 8.0
+color = Color(0.20, 0.22, 0.27, 1)
+
+[node name="Cab" type="Node2D" parent="."]
+
+[node name="CabBody" type="ColorRect" parent="Cab"]
+offset_left = -36.0
+offset_top = -56.0
+offset_right = 36.0
+offset_bottom = -8.0
+color = Color(0.96, 0.66, 0.22, 1)
+
+[node name="CabWindow" type="ColorRect" parent="Cab"]
+offset_left = -24.0
+offset_top = -48.0
+offset_right = 24.0
+offset_bottom = -22.0
+color = Color(0.30, 0.50, 0.70, 1)
+
+[node name="Hook" type="Node2D" parent="."]
+position = Vector2(0, 12)
+
+[node name="HookSprite" type="ColorRect" parent="Hook"]
+offset_left = -8.0
+offset_top = -6.0
+offset_right = 8.0
+offset_bottom = 6.0
+color = Color(0.18, 0.18, 0.22, 1)
+
+[node name="Rope" type="Line2D" parent="."]
+width = 3.0
+default_color = Color(0.20, 0.16, 0.10, 1)
+points = PackedVector2Array(0, 0, 0, 100)
+
+[node name="FloorHolder" type="Node2D" parent="."]
+position = Vector2(0, 12)

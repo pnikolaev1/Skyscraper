@@ -1,0 +1,90 @@
+[gd_scene load_steps=3 format=3 uid="uid://b6cosm00001"]
+
+[ext_resource type="Script" path="res://scripts/ui/cosmetics_screen.gd" id="1_c"]
+[ext_resource type="PackedScene" uid="uid://b6skyback01" path="res://scenes/skyline_background.tscn" id="2_sky"]
+
+[node name="CosmeticsScreen" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_c")
+
+[node name="SkylineBackground" parent="." instance=ExtResource("2_sky")]
+
+[node name="Title" type="Label" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 40.0
+offset_right = 300.0
+offset_bottom = 120.0
+text = "Cosmetics"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 56
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.6)
+theme_override_constants/outline_size = 6
+
+[node name="Center" type="Control" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -780.0
+offset_top = -360.0
+offset_right = 780.0
+offset_bottom = 360.0
+
+[node name="VBox" type="VBoxContainer" parent="Center"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/separation = 24
+
+[node name="Skins" type="VBoxContainer" parent="Center/VBox"]
+
+[node name="Header" type="Label" parent="Center/VBox/Skins"]
+text = "Tower Skins"
+theme_override_font_sizes/font_size = 28
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+
+[node name="Grid" type="GridContainer" parent="Center/VBox/Skins"]
+columns = 6
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 16
+
+[node name="Rooftops" type="VBoxContainer" parent="Center/VBox"]
+
+[node name="Header" type="Label" parent="Center/VBox/Rooftops"]
+text = "Rooftop Decorations"
+theme_override_font_sizes/font_size = 28
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+
+[node name="Grid" type="GridContainer" parent="Center/VBox/Rooftops"]
+columns = 6
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 16
+
+[node name="Skylines" type="VBoxContainer" parent="Center/VBox"]
+
+[node name="Header" type="Label" parent="Center/VBox/Skylines"]
+text = "Skyline Themes"
+theme_override_font_sizes/font_size = 28
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+
+[node name="Grid" type="GridContainer" parent="Center/VBox/Skylines"]
+columns = 6
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 16
+
+[node name="Back" type="Button" parent="."]
+offset_left = 30.0
+offset_top = 24.0
+offset_right = 200.0
+offset_bottom = 84.0
+text = "← Back"
+theme_override_font_sizes/font_size = 26
+
+[node name="Fade" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 1)
+mouse_filter = 2

@@ -1,0 +1,104 @@
+[gd_scene load_steps=8 format=3 uid="uid://b6game00001"]
+
+[ext_resource type="Script" path="res://scripts/gameplay/game.gd" id="1_game"]
+[ext_resource type="Script" path="res://scripts/gameplay/session.gd" id="2_session"]
+[ext_resource type="Script" path="res://scripts/gameplay/tower.gd" id="3_tower"]
+[ext_resource type="Script" path="res://scripts/gameplay/hazard_manager.gd" id="4_haz"]
+[ext_resource type="PackedScene" uid="uid://b6cran3001" path="res://scenes/crane.tscn" id="5_crane"]
+[ext_resource type="PackedScene" uid="uid://b6hud00001" path="res://scenes/hud.tscn" id="6_hud"]
+[ext_resource type="PackedScene" uid="uid://b6skyback01" path="res://scenes/skyline_background.tscn" id="7_sky"]
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_game")
+
+[node name="SkylineBackground" parent="." instance=ExtResource("7_sky")]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(960, 540)
+zoom = Vector2(1, 1)
+
+[node name="World" type="Node2D" parent="."]
+
+[node name="Tower" type="Node2D" parent="World"]
+script = ExtResource("3_tower")
+
+[node name="PingLayer" type="Node2D" parent="World"]
+z_index = 30
+
+[node name="FXLayer" type="Node2D" parent="World"]
+z_index = 35
+
+[node name="Crane" parent="." instance=ExtResource("5_crane")]
+position = Vector2(960, 120)
+
+[node name="FogLayer" type="CanvasLayer" parent="."]
+layer = 8
+
+[node name="HUD" parent="." instance=ExtResource("6_hud")]
+
+[node name="Session" type="Node" parent="."]
+script = ExtResource("2_session")
+
+[node name="HazardManager" type="Node" parent="."]
+script = ExtResource("4_haz")
+
+[node name="PauseLayer" type="CanvasLayer" parent="."]
+layer = 100
+
+[node name="PauseMenu" type="Control" parent="PauseLayer"]
+process_mode = 3
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Dim" type="ColorRect" parent="PauseLayer/PauseMenu"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.65)
+
+[node name="Panel" type="PanelContainer" parent="PauseLayer/PauseMenu"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = -220.0
+offset_right = 240.0
+offset_bottom = 220.0
+
+[node name="VBox" type="VBoxContainer" parent="PauseLayer/PauseMenu/Panel"]
+alignment = 1
+theme_override_constants/separation = 16
+
+[node name="Title" type="Label" parent="PauseLayer/PauseMenu/Panel/VBox"]
+text = "Paused"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 48
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+
+[node name="Resume" type="Button" parent="PauseLayer/PauseMenu/Panel/VBox"]
+custom_minimum_size = Vector2(380, 70)
+text = "Resume"
+theme_override_font_sizes/font_size = 28
+
+[node name="Restart" type="Button" parent="PauseLayer/PauseMenu/Panel/VBox"]
+custom_minimum_size = Vector2(380, 70)
+text = "Restart"
+theme_override_font_sizes/font_size = 28
+
+[node name="QuitToMenu" type="Button" parent="PauseLayer/PauseMenu/Panel/VBox"]
+custom_minimum_size = Vector2(380, 70)
+text = "Quit to Menu"
+theme_override_font_sizes/font_size = 28
+
+[node name="ResultsLayer" type="CanvasLayer" parent="."]
+layer = 110
+
+[node name="TransitionLayer" type="CanvasLayer" parent="."]
+layer = 200
+
+[node name="Fade" type="ColorRect" parent="TransitionLayer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 1)
+mouse_filter = 2

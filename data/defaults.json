@@ -1,0 +1,58 @@
+{
+	"_comment": "Tuning constants for Skyscraper. Edit these to rebalance the game without code changes.",
+
+	"floor_width": 260.0,
+	"floor_height": 56.0,
+
+	"base_pts": 100,
+	"perfect_bonus": 50,
+	"speed_bonus": 50,
+	"speed_threshold": 1.5,
+
+	"perfect_ratio": 0.05,
+	"good_ratio": 0.30,
+	"drop_ratio": 0.65,
+
+	"min_floors_for_sway": 5,
+	"shake_threshold_bads": 1.0,
+	"shake_per_bad": 8.0,
+	"shake_max_intensity": 3.0,
+	"shake_decay_rate": 0.4,
+	"shake_perfect_recovery": 1.0,
+	"lean_threshold_px": 20.0,
+	"shake_per_lean_px": 0.25,
+	"shake_max_lean_amp": 32.0,
+
+	"stability_start": 100,
+	"stability_max": 100,
+	"stability_gain_perfect": 5,
+	"stability_loss_miss": 15,
+
+	"lives_start": 3,
+
+	"crane_speed_start": 360.0,
+	"crane_speed_step": 18.0,
+	"crane_speed_step_every": 4,
+	"crane_speed_max": 900.0,
+	"crane_cooldown": 0.4,
+
+	"rope_length": 220.0,
+
+	"camera_lerp": 5.0,
+	"camera_lead_y": 240.0,
+
+	"wobble_amp_per_level": 8.0,
+	"wobble_frequency": 1.5,
+
+	"endless_hazard_first_at_floor": 4,
+	"endless_wind_chance_per_floor": 0.018,
+	"endless_fog_chance_per_floor": 0.010,
+	"endless_swing_chance_per_floor": 0.014,
+
+	"fog_ping_interval": 2.0,
+	"fog_default_duration": 7.0,
+	"wind_default_duration": 6.0,
+	"swing_default_duration": 5.0,
+
+	"perfect_combo_streak_for_unlock": 5
+}

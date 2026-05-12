@@ -1,0 +1,200 @@
+[gd_scene load_steps=2 format=3 uid="uid://b6hud00001"]
+
+[ext_resource type="Script" path="res://scripts/ui/hud.gd" id="1_hud"]
+
+[node name="HUD" type="CanvasLayer"]
+layer = 5
+script = ExtResource("1_hud")
+
+[node name="Top" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 0.0
+offset_bottom = 110.0
+mouse_filter = 2
+
+[node name="Score" type="PanelContainer" parent="Top"]
+offset_left = 32.0
+offset_top = 24.0
+offset_right = 320.0
+offset_bottom = 100.0
+
+[node name="Value" type="Label" parent="Top/Score"]
+text = "0"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 56
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.6)
+theme_override_constants/outline_size = 4
+
+[node name="Combo" type="Control" parent="Top"]
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -120.0
+offset_top = 32.0
+offset_right = 120.0
+offset_bottom = 100.0
+pivot_offset = Vector2(120, 34)
+mouse_filter = 2
+
+[node name="Value" type="Label" parent="Top/Combo"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "x2"
+horizontal_alignment = 1
+vertical_alignment = 1
+theme_override_font_sizes/font_size = 60
+theme_override_colors/font_color = Color(1, 0.85, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0.18, 0.10, 0.0, 0.8)
+theme_override_constants/outline_size = 6
+
+[node name="RightSide" type="Control" parent="Top"]
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -460.0
+offset_top = 24.0
+offset_right = -110.0
+offset_bottom = 110.0
+mouse_filter = 2
+
+[node name="Stability" type="VBoxContainer" parent="Top/RightSide"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+
+[node name="Label" type="Label" parent="Top/RightSide/Stability"]
+text = "Stability"
+horizontal_alignment = 2
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.55)
+theme_override_constants/outline_size = 3
+
+[node name="Bar" type="ProgressBar" parent="Top/RightSide/Stability"]
+custom_minimum_size = Vector2(320, 26)
+size_flags_horizontal = 3
+max_value = 100.0
+value = 100.0
+show_percentage = false
+
+[node name="Lives" type="VBoxContainer" parent="Top/RightSide"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+alignment = 2
+
+[node name="Label" type="Label" parent="Top/RightSide/Lives"]
+text = "Lives"
+horizontal_alignment = 2
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.55)
+theme_override_constants/outline_size = 3
+
+[node name="HBox" type="HBoxContainer" parent="Top/RightSide/Lives"]
+alignment = 2
+
+[node name="PauseButton" type="Button" parent="Top"]
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -84.0
+offset_top = 24.0
+offset_right = -24.0
+offset_bottom = 84.0
+text = "II"
+theme_override_font_sizes/font_size = 28
+
+[node name="Bottom" type="Control" parent="."]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -120.0
+mouse_filter = 2
+
+[node name="Height" type="Label" parent="Bottom"]
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -180.0
+offset_top = 12.0
+offset_right = 180.0
+offset_bottom = 80.0
+text = "Floor 0"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 36
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.6)
+theme_override_constants/outline_size = 4
+
+[node name="HazardBanner" type="PanelContainer" parent="."]
+offset_left = 8.0
+offset_top = 240.0
+offset_right = 320.0
+offset_bottom = 310.0
+
+[node name="Label" type="Label" parent="HazardBanner"]
+text = "⚠ Wind"
+horizontal_alignment = 1
+vertical_alignment = 1
+theme_override_font_sizes/font_size = 32
+theme_override_colors/font_color = Color(1, 0.95, 0.5, 1)
+
+[node name="Feedback" type="Label" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = -50.0
+offset_right = 240.0
+offset_bottom = 50.0
+text = "PERFECT!"
+horizontal_alignment = 1
+vertical_alignment = 1
+theme_override_font_sizes/font_size = 64
+theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.75)
+theme_override_constants/outline_size = 6
+pivot_offset = Vector2(240, 50)
+
+[node name="IntroOverlay" type="Control" parent="."]
+process_mode = 3
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 1
+
+[node name="Dim" type="ColorRect" parent="IntroOverlay"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.6)
+
+[node name="Panel" type="PanelContainer" parent="IntroOverlay"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -360.0
+offset_top = -180.0
+offset_right = 360.0
+offset_bottom = 200.0
+
+[node name="VBox" type="VBoxContainer" parent="IntroOverlay/Panel"]
+
+[node name="Text" type="Label" parent="IntroOverlay/Panel"]
+text = "Welcome!"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+theme_override_font_sizes/font_size = 34
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+
+[node name="Continue" type="Button" parent="IntroOverlay/Panel"]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -120.0
+offset_top = -80.0
+offset_right = 120.0
+offset_bottom = -20.0
+text = "Continue"
+theme_override_font_sizes/font_size = 28

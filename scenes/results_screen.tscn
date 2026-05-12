@@ -1,0 +1,115 @@
+[gd_scene load_steps=2 format=3 uid="uid://b6results01"]
+
+[ext_resource type="Script" path="res://scripts/ui/results_screen.gd" id="1_res"]
+
+[node name="ResultsScreen" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_res")
+
+[node name="Dim" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.65)
+
+[node name="Panel" type="PanelContainer" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -360.0
+offset_top = -280.0
+offset_right = 360.0
+offset_bottom = 320.0
+pivot_offset = Vector2(360, 300)
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+theme_override_constants/separation = 18
+
+[node name="Title" type="Label" parent="Panel/VBox"]
+text = "Run Over"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 52
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+
+[node name="Stars" type="HBoxContainer" parent="Panel/VBox"]
+visible = false
+alignment = 1
+theme_override_constants/separation = 18
+
+[node name="Star1" type="Label" parent="Panel/VBox/Stars"]
+text = "★"
+theme_override_font_sizes/font_size = 60
+modulate = Color(1, 1, 1, 0.2)
+
+[node name="Star2" type="Label" parent="Panel/VBox/Stars"]
+text = "★"
+theme_override_font_sizes/font_size = 60
+modulate = Color(1, 1, 1, 0.2)
+
+[node name="Star3" type="Label" parent="Panel/VBox/Stars"]
+text = "★"
+theme_override_font_sizes/font_size = 60
+modulate = Color(1, 1, 1, 0.2)
+
+[node name="Stats" type="VBoxContainer" parent="Panel/VBox"]
+theme_override_constants/separation = 8
+
+[node name="Score" type="HBoxContainer" parent="Panel/VBox/Stats"]
+alignment = 1
+
+[node name="Label" type="Label" parent="Panel/VBox/Stats/Score"]
+text = "Score: "
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(0.85, 0.92, 1, 1)
+
+[node name="Value" type="Label" parent="Panel/VBox/Stats/Score"]
+text = "0"
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(1, 0.95, 0.5, 1)
+
+[node name="Combo" type="HBoxContainer" parent="Panel/VBox/Stats"]
+alignment = 1
+
+[node name="Label" type="Label" parent="Panel/VBox/Stats/Combo"]
+text = "Best Combo: "
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(0.85, 0.92, 1, 1)
+
+[node name="Value" type="Label" parent="Panel/VBox/Stats/Combo"]
+text = "x1"
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(1, 0.95, 0.5, 1)
+
+[node name="Height" type="HBoxContainer" parent="Panel/VBox/Stats"]
+alignment = 1
+
+[node name="Label" type="Label" parent="Panel/VBox/Stats/Height"]
+text = "Reached: "
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(0.85, 0.92, 1, 1)
+
+[node name="Value" type="Label" parent="Panel/VBox/Stats/Height"]
+text = "Floor 0"
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(1, 0.95, 0.5, 1)
+
+[node name="Unlock" type="Label" parent="Panel/VBox"]
+text = ""
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.95, 0.85, 0.4, 1)
+
+[node name="Buttons" type="HBoxContainer" parent="Panel/VBox"]
+alignment = 1
+theme_override_constants/separation = 28
+
+[node name="Retry" type="Button" parent="Panel/VBox/Buttons"]
+custom_minimum_size = Vector2(240, 70)
+text = "Retry"
+theme_override_font_sizes/font_size = 28
+
+[node name="Continue" type="Button" parent="Panel/VBox/Buttons"]
+custom_minimum_size = Vector2(240, 70)
+text = "Continue"
+theme_override_font_sizes/font_size = 28
