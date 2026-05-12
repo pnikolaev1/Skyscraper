@@ -34,43 +34,48 @@ offset_top = -360.0
 offset_right = 780.0
 offset_bottom = 360.0
 
-[node name="VBox" type="VBoxContainer" parent="Center"]
+[node name="Scroll" type="ScrollContainer" parent="Center"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+horizontal_scroll_mode = 0
+
+[node name="VBox" type="VBoxContainer" parent="Center/Scroll"]
+custom_minimum_size = Vector2(1500, 0)
+size_flags_horizontal = 3
 theme_override_constants/separation = 24
 
-[node name="Skins" type="VBoxContainer" parent="Center/VBox"]
+[node name="Skins" type="VBoxContainer" parent="Center/Scroll/VBox"]
 
-[node name="Header" type="Label" parent="Center/VBox/Skins"]
+[node name="Header" type="Label" parent="Center/Scroll/VBox/Skins"]
 text = "Tower Skins"
 theme_override_font_sizes/font_size = 28
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 
-[node name="Grid" type="GridContainer" parent="Center/VBox/Skins"]
+[node name="Grid" type="GridContainer" parent="Center/Scroll/VBox/Skins"]
 columns = 6
 theme_override_constants/h_separation = 16
 theme_override_constants/v_separation = 16
 
-[node name="Rooftops" type="VBoxContainer" parent="Center/VBox"]
+[node name="Rooftops" type="VBoxContainer" parent="Center/Scroll/VBox"]
 
-[node name="Header" type="Label" parent="Center/VBox/Rooftops"]
+[node name="Header" type="Label" parent="Center/Scroll/VBox/Rooftops"]
 text = "Rooftop Decorations"
 theme_override_font_sizes/font_size = 28
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 
-[node name="Grid" type="GridContainer" parent="Center/VBox/Rooftops"]
+[node name="Grid" type="GridContainer" parent="Center/Scroll/VBox/Rooftops"]
 columns = 6
 theme_override_constants/h_separation = 16
 theme_override_constants/v_separation = 16
 
-[node name="Skylines" type="VBoxContainer" parent="Center/VBox"]
+[node name="Skylines" type="VBoxContainer" parent="Center/Scroll/VBox"]
 
-[node name="Header" type="Label" parent="Center/VBox/Skylines"]
+[node name="Header" type="Label" parent="Center/Scroll/VBox/Skylines"]
 text = "Skyline Themes"
 theme_override_font_sizes/font_size = 28
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 
-[node name="Grid" type="GridContainer" parent="Center/VBox/Skylines"]
+[node name="Grid" type="GridContainer" parent="Center/Scroll/VBox/Skylines"]
 columns = 6
 theme_override_constants/h_separation = 16
 theme_override_constants/v_separation = 16

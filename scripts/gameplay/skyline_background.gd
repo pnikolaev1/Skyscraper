@@ -27,6 +27,13 @@ var night_data: Dictionary = {
 	"mood": "night"
 }
 
+const SUN_BASE_POS := Vector2(1560.0, 120.0)
+const FAR_LAYER_BASE_Y := 700.0
+const MID_LAYER_BASE_Y := 760.0
+const NEAR_LAYER_BASE_Y := 820.0
+
+var _cloud_base_positions: Array[Vector2] = []
+
 func _ready() -> void:
 	_build_buildings()
 	_build_stars()
@@ -124,6 +131,7 @@ func _build_clouds() -> void:
 		var c := Node2D.new()
 		clouds.add_child(c)
 		c.position = Vector2(rng.randf_range(-200.0, 1920.0), rng.randf_range(60.0, 320.0))
+		_cloud_base_positions.append(c.position)
 		for j in range(rng.randi_range(3, 6)):
 			var p := ColorRect.new()
 			var w := rng.randf_range(60.0, 110.0)
@@ -137,11 +145,17 @@ func _build_clouds() -> void:
 		tween.tween_callback(func(): c.position.x = -260.0)
 
 func apply_parallax(cam_y: float) -> void:
-	# cam_y is camera's y in world. As camera rises, layers shift downward by a fraction
-	# so far layers shift the least. We move layers in CanvasLayer space (screen) by an
-	# offset relative to cam_y baseline of 0.
+	# cam_y is camera's y in world. When the gameplay camera rises, its y decreases.
+	# In screen space we want the skyline to slide downward, revealing more sky.
 	var baseline := 0.0
 	var dy := cam_y - baseline
-	far_layer.position.y = 700.0 + dy * 0.05
-	mid_layer.position.y = 760.0 + dy * 0.12
-	near_layer.position.y = 820.0 + dy * 0.22
+	var rise_offset := -dy
+	far_layer.position.y = FAR_LAYER_BASE_Y + rise_offset * 0.05
+	mid_layer.position.y = MID_LAYER_BASE_Y + rise_offset * 0.12
+	near_layer.position.y = NEAR_LAYER_BASE_Y + rise_offset * 0.22
+	sun.position = SUN_BASE_POS + Vector2(0.0, rise_offset * 0.03)
+	for i in range(min(clouds.get_child_count(), _cloud_base_positions.size())):
+		var cloud := clouds.get_child(i) as Node2D
+		if cloud == null:
+			continue
+		cloud.position.y = _cloud_base_positions[i].y + rise_offset * 0.08

@@ -1,9 +1,9 @@
 extends Control
 class_name CosmeticsScreen
 
-@onready var skin_grid: GridContainer = $Center/VBox/Skins/Grid
-@onready var roof_grid: GridContainer = $Center/VBox/Rooftops/Grid
-@onready var sky_grid: GridContainer = $Center/VBox/Skylines/Grid
+@onready var skin_grid: GridContainer = $Center/Scroll/VBox/Skins/Grid
+@onready var roof_grid: GridContainer = $Center/Scroll/VBox/Rooftops/Grid
+@onready var sky_grid: GridContainer = $Center/Scroll/VBox/Skylines/Grid
 @onready var back_btn: Button = $Back
 @onready var fade: ColorRect = $Fade
 
