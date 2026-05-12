@@ -1,6 +1,8 @@
 extends Control
 class_name LeaderboardScreen
 
+# local leaderboard for endless mode. just lists best runs in order
+
 @onready var list: VBoxContainer = $Center/Scroll/List
 @onready var empty: Label = $Center/Empty
 @onready var back_btn: Button = $Back

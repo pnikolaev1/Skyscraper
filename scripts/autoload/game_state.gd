@@ -1,5 +1,5 @@
 extends Node
-## Holds runtime session/mode info shared across scenes.
+# keeps track of which mode were playing and stuff shared between scenes
 
 enum Mode { NONE, ENDLESS, LEVEL }
 

@@ -1,8 +1,9 @@
 extends Node
 class_name HazardManager
 
-## Schedules and owns hazard instances. Endless: random by tower height curve.
-## Level: driven by HazardConfig list with floor-based start and repeat cadence.
+# owns the hazard instances and decides when to fire em.
+# endless mode: random based on tower height
+# level mode: driven by the HazardConfig list - floor-based start + repeat cadence
 
 signal hazard_started(id: String, intensity: int, duration: float)
 signal hazard_ended(id: String)
@@ -15,7 +16,7 @@ var session: Session
 
 var hazards: Dictionary = {}  # id -> HazardBase
 
-var _level_state: Array = []  # parallel to level.hazards: { config, next_t, started_once }
+var _level_state: Array = []  # one entry per level.hazards: {config, next_t, started}
 var _endless_rng := RandomNumberGenerator.new()
 var _endless_first_floor: int = 4
 
@@ -84,7 +85,7 @@ func _process_level(delta: float) -> void:
 				state["next_t"] = cfg.repeat_every
 
 func _process_endless(_delta: float) -> void:
-	# Trigger on floor changes only (cheap and avoids retriggering)
+	# we only roll the dice when a floor lands. cheaper and avoids re-triggers
 	pass
 
 func notify_floor_placed(floor_n: int) -> void:
@@ -92,7 +93,7 @@ func notify_floor_placed(floor_n: int) -> void:
 		return
 	if floor_n < _endless_first_floor:
 		return
-	# escalating chance per floor placed (capped)
+	# odds go up the higher you get, capped
 	var bump: float = clampf(float(floor_n - _endless_first_floor) * 0.005, 0.0, 0.10)
 	var c_wind: float = Config.get_f("endless_wind_chance_per_floor", 0.018) + bump
 	var c_fog: float = Config.get_f("endless_fog_chance_per_floor", 0.010) + bump * 0.6

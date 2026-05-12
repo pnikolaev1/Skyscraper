@@ -1,8 +1,8 @@
 extends RefCounted
 class_name LevelLibrary
 
-## Ordered list of level resource paths. To add a new level: drop a new .tres at the path
-## and add its id+path here.
+# ordered list of level .tres paths.
+# add a new level: drop a .tres in resources/levels/ and add its id+path here
 
 const LEVELS: Array = [
 	{"id": "level_01_tutorial", "path": "res://resources/levels/level_01_tutorial.tres"}

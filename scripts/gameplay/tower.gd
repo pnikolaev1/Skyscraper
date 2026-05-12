@@ -1,20 +1,20 @@
 extends Node2D
 class_name Tower
 
-## Owns the stack of placed floors. The tower shakes as a single rigid body driven by a
-## pool of recent bad placements that decays over time. A perfect placement drains the
-## pool; a miss or drop adds to it. The base stays planted only because the camera doesn't
-## see below it — every floor in the stack translates with the same offset.
+# the tower of placed floors. the whole thing wobbles as a single rigid body,
+# driven by a pool of recent bad placements that decays over time.
+# perfect placement drains it, miss/drop adds to it.
+# every floor translates by the same amount so the whole stack moves together
 
 signal floor_added(floor_piece: FloorPiece, height: int)
 
 @export var base_y: float = 0.0       # ground y, set by Game on spawn
 
-var floors: Array[FloorPiece] = []  # bottom -> top
-var wobble_level: int = 0           # hazard-driven additive amplitude bump
+var floors: Array[FloorPiece] = []  # bottom to top
+var wobble_level: int = 0           # hazard adds to amplitude on top of the pool
 var shake_t: float = 0.0
 var current_amp: float = 0.0
-# How many bad placements are "still being felt". Decays toward 0.
+# how many bad placements are still being "felt". decays toward 0
 var bad_pool: float = 0.0
 var skin_data: Dictionary
 var rooftop_type: String = "antenna"
@@ -30,10 +30,10 @@ func _process(delta: float) -> void:
 		set_meta("base_x", position.x)
 
 	shake_t += delta
-	# Bad-placement pool decays steadily over time.
+	# pool of recent badness slowly drains
 	bad_pool = maxf(0.0, bad_pool - Config.get_f("shake_decay_rate", 0.4) * delta)
 
-	# Translate the entire tower as one — every floor moves the same amount.
+	# whole tower translates as one, all floors move together
 	position.x = float(get_meta("base_x")) + _compute_offset(delta)
 
 func _compute_offset(delta: float) -> float:
@@ -44,17 +44,17 @@ func _compute_offset(delta: float) -> float:
 
 	var target: float = 0.0
 	if floors.size() >= min_floors:
-		# Only the part of the pool that exceeds the threshold actually shakes the tower.
-		# 1 bad placement = no visible shake; 2 = small; 3+ = obvious.
+		# only the part of the pool over the threshold counts.
+		# 1 bad = no visible shake, 2 = small, 3+ = pretty obvious
 		target = clampf(bad_pool - threshold, 0.0, max_intensity) * per_bad
-		# Off-balance: the further the top floor drifts from the base axis, the more
-		# the whole tower shakes (top-heavy structures sway more under load).
+		# off balance: top floor drifted from center? extra shake on top of pool.
+		# top-heavy buildings sway more under load
 		var lean_px: float = get_lean_offset()
 		var lean_threshold: float = Config.get_f("lean_threshold_px", 20.0)
 		var lean_excess: float = maxf(0.0, lean_px - lean_threshold)
 		var lean_amp: float = clampf(lean_excess * Config.get_f("shake_per_lean_px", 0.25), 0.0, Config.get_f("shake_max_lean_amp", 32.0))
 		target += lean_amp
-	# Hazard-driven wobble (tower_wobble hazard) stays additive.
+	# tower_wobble hazard piles on top of everything else
 	target += float(wobble_level) * Config.get_f("wobble_amp_per_level", 8.0)
 
 	current_amp = lerpf(current_amp, target, delta * 4.0)
@@ -85,8 +85,8 @@ func spawn_base_floor(width: float, y: float) -> FloorPiece:
 	return f
 
 func place_floor(f: FloorPiece, world_x: float) -> void:
-	# Snap to the top of the highest floor; every floor moves with the tower as one block,
-	# so the local position captured here is the floor's permanent resting position.
+	# stick it onto the top floor. since everything moves together as one block
+	# this local x becomes the floors permanent resting spot
 	var top := floors.back() as FloorPiece
 	var local_y: float = to_local(Vector2(world_x, top.global_position.y - top.height)).y
 
@@ -96,8 +96,8 @@ func place_floor(f: FloorPiece, world_x: float) -> void:
 		add_child(f)
 		f.global_position = gpos
 
-	# Just set local x relative to the (currently shaken) tower; the floor will track the
-	# tower's translation from now on, so no per-floor rest tracking is needed.
+	# local x relative to whatever the towers currently doing. the floor will
+	# follow the tower from now on so no per-floor tracking needed
 	f.position.x = world_x - global_position.x
 	f.position.y = local_y
 	if f.body:
@@ -130,7 +130,7 @@ func get_top_center_x_world() -> float:
 func set_wobble_level(level: int) -> void:
 	wobble_level = clampi(level, 0, 3)
 
-# Called by Game on every placement so the tower can react to recent bad placements.
+# game calls these so the tower can react to whats happening
 func notify_bad_placement(severity: float = 1.0) -> void:
 	bad_pool += severity
 

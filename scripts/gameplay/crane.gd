@@ -1,8 +1,8 @@
 extends Node2D
 class_name Crane
 
-## Crane that sweeps horizontally at the top of the screen. Holds a floor via a visible rope.
-## Reads input via the "release_floor" InputMap action to release the floor.
+# crane sweeps left/right at the top, holds a floor on a rope.
+# release_floor input drops the floor.
 
 signal floor_released(piece: FloorPiece, velocity: Vector2)
 signal next_floor_ready
@@ -18,7 +18,7 @@ var cooldown_dur: float = 0.4
 var has_floor: bool = true
 var input_locked: bool = false
 
-# Hazards modifying the held floor
+# hazards that mess with the hanging floor
 var swing_amplitude: float = 0.0    # px from rope anchor
 var swing_omega: float = 3.0        # rad/sec
 var swing_t: float = 0.0
@@ -26,7 +26,7 @@ var wind_amplitude: float = 0.0
 var wind_omega: float = 1.6
 var wind_t: float = 0.0
 
-# Skin to apply to new floors
+# skin to slap onto new floors as they spawn
 var skin_data: Dictionary
 
 @onready var rope: Line2D = $Rope
@@ -69,25 +69,25 @@ func _physics_process(delta: float) -> void:
 		_update_movement(delta)
 	if has_floor and current_floor:
 		_update_floor_hang(delta)
-	# rope visual update
+	# rope visual
 	if rope and current_floor and has_floor:
 		rope.points = PackedVector2Array([
 			to_local(hook_sprite.global_position),
 			to_local(current_floor.global_position - Vector2(0, current_floor.height * 0.5))
 		])
 	elif rope:
-		# empty rope while waiting
+		# rope just dangles while we wait for the next floor
 		rope.points = PackedVector2Array([
 			to_local(hook_sprite.global_position),
 			to_local(hook_sprite.global_position) + Vector2(0, 30)
 		])
-	# Cooldown ticks
+	# cooldown tick
 	if cooldown_t > 0.0:
 		cooldown_t -= delta
 		if cooldown_t <= 0.0 and not has_floor:
 			_spawn_floor()
 			emit_signal("next_floor_ready")
-	# Input
+	# input
 	if has_floor and not input_locked and Input.is_action_just_pressed("release_floor"):
 		_release()
 
@@ -103,12 +103,12 @@ func _update_movement(delta: float) -> void:
 func _update_floor_hang(delta: float) -> void:
 	swing_t += delta
 	wind_t += delta
-	# horizontal pendulum offset
+	# pendulum
 	var swing_x := sin(swing_t * swing_omega) * swing_amplitude
-	# wind oscillation
+	# wind shove
 	var wind_x := sin(wind_t * wind_omega) * wind_amplitude
 	var offset_x := swing_x + wind_x
-	# Tilt the floor a little based on combined swing rate
+	# little tilt on the floor so it looks like its leaning into the swing
 	var combined: float = swing_x + wind_x
 	var tilt := clampf(combined * 0.0025, -0.25, 0.25)
 	current_floor.position = floor_holder.position + Vector2(offset_x, rope_length)
@@ -120,7 +120,7 @@ func _spawn_floor() -> void:
 	add_child(current_floor)
 	current_floor.set_skin(skin_data)
 	current_floor.position = floor_holder.position + Vector2(0, rope_length)
-	# Floor slide-in animation
+	# slide it in from the side so it doesnt just pop into existence
 	var start_pos := current_floor.position + Vector2(direction * -400.0, 0)
 	current_floor.position = start_pos
 	var tween := create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
@@ -130,17 +130,17 @@ func _spawn_floor() -> void:
 func _release() -> void:
 	if not current_floor:
 		return
-	# compute horizontal velocity at release: derivative of the swing offset
+	# horizontal velocity at release = derivative of the swing offset
 	var swing_vx := cos(swing_t * swing_omega) * swing_amplitude * swing_omega
 	var wind_vx := cos(wind_t * wind_omega) * wind_amplitude * wind_omega
 	var vx := swing_vx + wind_vx
-	# also add a tiny bias in crane motion direction
+	# could add a tiny bias toward crane direction here but it feels fine without
 	var vy := 0.0
 	# detach
 	var f := current_floor
 	current_floor = null
 	has_floor = false
-	# reparent to scene root so the crane can keep moving without dragging the falling floor
+	# reparent to scene root so crane can keep moving without dragging the floor along
 	var world_pos := f.global_position
 	f.get_parent().remove_child(f)
 	get_tree().current_scene.add_child(f)
@@ -150,7 +150,7 @@ func _release() -> void:
 	cooldown_t = cooldown_dur
 	AudioManager.play_sfx("click", randf_range(0.95, 1.05))
 
-# Hazard accessors
+# hazard accessors
 func set_swing(amplitude: float, omega: float) -> void:
 	swing_amplitude = amplitude
 	swing_omega = max(0.3, omega)

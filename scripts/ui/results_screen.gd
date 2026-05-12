@@ -13,7 +13,7 @@ class_name ResultsScreen
 @onready var panel: PanelContainer = $Panel
 
 func _ready() -> void:
-	# Slide / fade in
+	# slide and fade it in
 	dim.modulate.a = 0.0
 	panel.modulate.a = 0.0
 	panel.scale = Vector2(0.85, 0.85)
@@ -47,7 +47,7 @@ func _populate(res: Dictionary) -> void:
 	# Show unlock if anything new was unlocked recently
 	_check_recent_unlocks()
 
-	# Continue button label
+	# tweak the continue button label depending on context
 	if int(res.get("mode", 0)) == GameState.Mode.LEVEL and bool(res.get("success", false)):
 		continue_btn.text = "Continue"
 	else:

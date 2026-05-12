@@ -1,8 +1,7 @@
 extends HazardBase
 class_name TowerWobbleHazard
 
-## Boosts the tower's wobble level temporarily. Note: stability-derived wobble is
-## applied separately; this hazard just adds a forced minimum.
+# forces a minimum wobble level for a bit. the bad-placement pool stacks on top
 
 var _previous_min: int = 0
 var _forced: int = 0
@@ -15,5 +14,5 @@ func _on_activate() -> void:
 
 func _on_deactivate() -> void:
 	if tower:
-		# Will be re-evaluated by the manager on next stability update.
+		# game.gd re-evaluates this on the next stability tick anyway
 		tower.set_wobble_level(_previous_min)

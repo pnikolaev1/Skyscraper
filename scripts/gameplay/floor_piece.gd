@@ -1,10 +1,11 @@
 extends Node2D
 class_name FloorPiece
 
-## A single building floor. Has two states:
-##   - hanging: position controlled by crane (via parent set_position calls)
-##   - falling: integrates gravity, with optional horizontal velocity from swing
-##   - placed:  static, part of the tower
+# one building floor. it has a few states:
+#   hanging - crane controls position
+#   falling - just gravity (and maybe horizontal velocity from swing)
+#   placed  - static, glued to the tower
+#   dropped - slipped off the side, tumbling away
 
 signal landed(landing_offset_x: float, on_floor: FloorPiece)
 
@@ -14,14 +15,14 @@ var state: int = State.HANGING
 var width: float = 260.0
 var height: float = 56.0
 var velocity: Vector2 = Vector2.ZERO
-var angular_velocity: float = 0.0  # rad/sec, used while DROPPED
-var swing_angle: float = 0.0   # for visual tilt while hanging
+var angular_velocity: float = 0.0  # rad/sec, only used while DROPPED
+var swing_angle: float = 0.0   # tilt while hanging
 var skin_data: Dictionary = {
 	"base": Color(0.50, 0.78, 0.92),
 	"accent": Color(0.85, 0.95, 1.0),
 	"window": Color(0.20, 0.36, 0.50)
 }
-var rooftop_type: String = ""  # only set on the very topmost floor for decoration
+var rooftop_type: String = ""  # only the topmost floor actually gets the deco
 var has_decoration: bool = false
 var _gravity: float = 2400.0
 
@@ -65,13 +66,13 @@ func release(initial_velocity: Vector2 = Vector2.ZERO) -> void:
 		body.rotation = 0.0
 
 func drop(side: float) -> void:
-	# Slipping off the side of the building. `side` is the sign of the offset
-	# (positive = right, negative = left). The floor keeps falling but also
-	# slides sideways and rotates outward like a toppling slab.
+	# slipping off the building. side is the sign of how far off it was
+	# (positive = right, negative = left). floor keeps falling but slides sideways
+	# and spins outward like a toppling slab
 	state = State.DROPPED
-	# Sideways slip from however far off it landed
+	# sideways nudge so it actually clears the tower
 	velocity.x += signf(side) * 220.0
-	# A little upward kick so the tumble reads visually before gravity takes over
+	# tiny upward kick so you can actually see it tumble before gravity wins
 	if velocity.y > 0:
 		velocity.y *= 0.6
 	angular_velocity = signf(side) * randf_range(3.5, 5.5)
@@ -82,7 +83,7 @@ func mark_placed() -> void:
 	angular_velocity = 0.0
 
 func get_top_y() -> float:
-	# top edge of the floor in world coordinates
+	# top edge in world coords
 	return global_position.y - height * 0.5
 
 func get_center_x() -> float:
@@ -94,7 +95,7 @@ func get_half_width() -> float:
 func _redraw() -> void:
 	if body == null:
 		return
-	# clear previous children
+	# nuke whatevers there
 	for c in body.get_children():
 		c.queue_free()
 	# main rect
@@ -103,13 +104,13 @@ func _redraw() -> void:
 	rect.size = Vector2(width, height)
 	rect.position = Vector2(-width * 0.5, -height * 0.5)
 	body.add_child(rect)
-	# top accent
+	# top accent stripe
 	var accent := ColorRect.new()
 	accent.color = Color(skin_data.get("accent", Color.WHITE))
 	accent.size = Vector2(width, 6)
 	accent.position = Vector2(-width * 0.5, -height * 0.5)
 	body.add_child(accent)
-	# windows row
+	# row of windows
 	var win_color: Color = Color(skin_data.get("window", Color(0.2, 0.36, 0.5)))
 	var window_w := 22.0
 	var window_h := 22.0
@@ -126,10 +127,10 @@ func _redraw() -> void:
 			w.size = Vector2(window_w, window_h)
 			w.position = Vector2(start_x + i * (window_w + gap), y)
 			body.add_child(w)
-	# rooftop decoration (only used on top-of-tower decoration)
+	# rooftop deco only goes on the actual top floor
 	if has_decoration:
 		_add_rooftop()
-	# shadow update
+	# shadow
 	if shadow:
 		shadow.polygon = PackedVector2Array([
 			Vector2(-width * 0.5 + 6, height * 0.5),
@@ -166,7 +167,7 @@ func _add_rooftop() -> void:
 			leaf.size = Vector2(width * 0.6, 14)
 			leaf.position = Vector2(-width * 0.3, -22)
 			top.add_child(leaf)
-			# little tree silhouettes
+			# tiny tree silhouettes
 			for i in range(3):
 				var t := ColorRect.new()
 				t.color = Color(0.20, 0.45, 0.25)
@@ -184,7 +185,7 @@ func _add_rooftop() -> void:
 			stripe.size = Vector2(20, 6)
 			stripe.position = Vector2(-10, -10)
 			top.add_child(stripe)
-			# H letter approximation
+			# H letter, kinda. close enough
 			var bar1 := ColorRect.new()
 			bar1.color = Color(1, 0.95, 0.7)
 			bar1.size = Vector2(6, 28)

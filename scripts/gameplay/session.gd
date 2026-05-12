@@ -1,7 +1,8 @@
 extends Node
 class_name Session
 
-## Owner of run-time session state. Emits signals in the order required by the design spec.
+# owns the runtime state for a single run/level. emits signals in the order
+# the spec wants (release -> evaluated -> combo -> score -> stability -> life -> end)
 
 enum Quality { PERFECT, GOOD, MISS, DROPPED }
 
@@ -33,7 +34,7 @@ var misses: int = 0
 var perfect_streak_count: int = 0
 var ended: bool = false
 
-# Time of last placement, for level mode speed bonus
+# when the last floor landed, used for the speed bonus in level mode
 var _last_place_time: float = 0.0
 
 func _ready() -> void:
@@ -71,18 +72,18 @@ func notify_floor_released() -> void:
 func report_placement(quality: int, offset: float) -> void:
 	if ended:
 		return
-	# A "DROPPED" placement is a floor that fell off the building — it doesn't count
-	# toward height/floors_placed, but still costs stability/lives like a miss.
+	# a DROPPED placement is one that fell off the side - doesnt count toward
+	# height but still costs you stability/lives like a normal miss
 	var counted: bool = quality != Quality.DROPPED
 	if counted:
 		floors_placed += 1
-		height = floors_placed  # 1 floor placed = floor 1 (the base isn't counted)
-	# 2: placement_evaluated
+		height = floors_placed  # one placement = floor 1. the base doesnt count
+	# 2: placement evaluated
 	emit_signal("placement_evaluated", quality, offset)
 	if counted:
 		emit_signal("height_changed", height)
 
-	# 3: combo_updated
+	# 3: combo
 	match quality:
 		Quality.PERFECT:
 			combo += 1
@@ -90,7 +91,7 @@ func report_placement(quality: int, offset: float) -> void:
 			perfect_streak_count += 1
 			emit_signal("perfect_streak", perfect_streak_count)
 		Quality.GOOD:
-			# combo unchanged
+			# combo stays the same on a good
 			goods += 1
 			perfect_streak_count = 0
 		Quality.MISS, Quality.DROPPED:
@@ -100,12 +101,12 @@ func report_placement(quality: int, offset: float) -> void:
 	max_combo = max(max_combo, combo)
 	emit_signal("combo_updated", combo)
 
-	# 4: score_awarded (no score for miss or dropped)
+	# 4: score (nothin awarded for miss/dropped)
 	var base: int = Config.get_i("base_pts", 100)
 	var bonus: int = 0
 	if quality == Quality.PERFECT:
 		bonus += Config.get_i("perfect_bonus", 50)
-	# Speed bonus (level mode only, on landed placements)
+	# quick placement bonus, level mode only
 	if mode == GameState.Mode.LEVEL and (quality == Quality.PERFECT or quality == Quality.GOOD):
 		var dt := elapsed_time - _last_place_time
 		if dt > 0.0 and dt <= Config.get_f("speed_threshold", 1.5):
@@ -117,7 +118,7 @@ func report_placement(quality: int, offset: float) -> void:
 	_last_place_time = elapsed_time
 	emit_signal("score_awarded", pts, score)
 
-	# 5: stability_updated
+	# 5: stability
 	match quality:
 		Quality.PERFECT:
 			stability = min(Config.get_i("stability_max", 100), stability + Config.get_i("stability_gain_perfect", 5))
@@ -125,14 +126,14 @@ func report_placement(quality: int, offset: float) -> void:
 			stability = max(0, stability - Config.get_i("stability_loss_miss", 15))
 	emit_signal("stability_updated", stability)
 
-	# (6: hazard_triggered is independent, fired by HazardManager via notify_hazard)
+	# (6 - hazards are fired seperately by HazardManager whenever)
 
-	# 7: life_lost (level mode, on miss or dropped)
+	# 7: life lost (only in level mode and only on miss/drop)
 	if (quality == Quality.MISS or quality == Quality.DROPPED) and mode == GameState.Mode.LEVEL:
 		lives = max(0, lives - 1)
 		emit_signal("life_lost", lives)
 
-	# 8: session_ended (if conditions met)
+	# 8: session ended if any of the conditions hit
 	_check_end_conditions()
 
 func notify_hazard(hazard_id: String, intensity: int, duration: float) -> void:
@@ -159,7 +160,7 @@ func _end_session(reason: String) -> void:
 func build_results(reason: String) -> Dictionary:
 	var stars := 0
 	if mode == GameState.Mode.LEVEL and level and reason == "level_complete":
-		# 1, 2, or 3 stars based on thresholds (score_goal * factor)
+		# 1/2/3 stars based on how far past the score goal we got
 		var thresholds: PackedFloat32Array = level.star_thresholds
 		var goal := float(level.score_goal)
 		var ratio: float = float(score) / maxf(1.0, goal)
@@ -172,7 +173,7 @@ func build_results(reason: String) -> Dictionary:
 	if mode == GameState.Mode.LEVEL:
 		success = reason == "level_complete"
 	else:
-		success = false  # endless never "succeeds"
+		success = false  # endless can never succeed, only ever end
 	return {
 		"mode": mode,
 		"reason": reason,

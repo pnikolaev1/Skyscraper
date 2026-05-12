@@ -1,7 +1,8 @@
 extends RefCounted
 class_name Config
 
-## Loads data/defaults.json once. Read-only at runtime.
+# loads data/defaults.json once. read-only at runtime.
+# kinda annoying that godot doesnt have a nice json const loader so we roll our own
 
 const PATH := "res://data/defaults.json"
 static var _data: Dictionary

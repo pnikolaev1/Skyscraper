@@ -1,20 +1,22 @@
 extends Node
-## Centralized audio: music bus + sfx bus, with procedurally generated tones as defaults.
-## Bundled SFX/music files are optional — if missing, we synthesize simple tones in code.
+# music bus + sfx bus. if we dont have real audio files we just synthesize beep tones
+# so the game isnt totally silent on a fresh checkout
 
 const MUSIC_BUS := "Music"
 const SFX_BUS := "SFX"
+# one song for the whole game (menu + gameplay use the same track)
+const BACKGROUND_MUSIC_PATH := "res://assets/audio/music/background.mp3"
 
 var _music_player: AudioStreamPlayer
 var _sfx_players: Array[AudioStreamPlayer] = []
 var _sfx_index: int = 0
 const SFX_VOICES := 8
 
-# Tone cache: id -> AudioStreamWAV
+# tone cache so we dont rebuild the same waveform over and over
 var _tone_cache: Dictionary = {}
 
 func _ready() -> void:
-	# Set up buses if they don't exist
+	# make the buses if they arent already there
 	if AudioServer.get_bus_index(MUSIC_BUS) == -1:
 		AudioServer.add_bus()
 		AudioServer.set_bus_name(AudioServer.bus_count - 1, MUSIC_BUS)
@@ -34,7 +36,7 @@ func _ready() -> void:
 		add_child(p)
 		_sfx_players.append(p)
 
-	# Apply saved volumes
+	# load whatever volumes the user had last time
 	apply_settings()
 	SaveSystem.save_loaded.connect(apply_settings)
 
@@ -52,20 +54,23 @@ func set_sfx_volume(v: float) -> void:
 	if idx >= 0:
 		AudioServer.set_bus_volume_db(idx, linear_to_db(max(0.0001, v)))
 
-# ---------------- Music ----------------
-func play_music(id: String) -> void:
-	# Try file-based first
-	var path := "res://assets/audio/music/%s.ogg" % id
-	if ResourceLoader.exists(path):
-		var s := load(path)
+# ---------------- music ----------------
+func play_music(_id: String) -> void:
+	# just plays the one background track. id is ignored - same song everywhere
+	if ResourceLoader.exists(BACKGROUND_MUSIC_PATH):
+		var s: AudioStream = load(BACKGROUND_MUSIC_PATH)
+		if s is AudioStreamMP3:
+			(s as AudioStreamMP3).loop = true
+		elif s is AudioStreamOggVorbis:
+			(s as AudioStreamOggVorbis).loop = true
 		if s and _music_player.stream != s:
 			_music_player.stream = s
 			_music_player.play()
-		elif not _music_player.playing:
+		elif s and not _music_player.playing:
 			_music_player.play()
 		return
-	# Otherwise synthesize an ambient tone loop
-	var tone := _get_or_build_ambient(id)
+	# file missing for some reason - fall back to a tone so its not totally silent
+	var tone := _get_or_build_ambient("gameplay")
 	if _music_player.stream != tone:
 		_music_player.stream = tone
 		_music_player.play()
@@ -75,7 +80,7 @@ func play_music(id: String) -> void:
 func stop_music() -> void:
 	_music_player.stop()
 
-# ---------------- SFX ----------------
+# ---------------- sfx ----------------
 func play_sfx(id: String, pitch: float = 1.0, volume_db: float = 0.0) -> void:
 	var stream: AudioStream = null
 	var path := "res://assets/audio/sfx/%s.wav" % id
@@ -94,7 +99,8 @@ func _next_sfx_player() -> AudioStreamPlayer:
 	_sfx_index = (_sfx_index + 1) % _sfx_players.size()
 	return p
 
-# ---------------- Procedural tones ----------------
+# ---------------- procedural tones ----------------
+# yeah its a bit ghetto but it works without any external assets
 func _get_or_build_sfx(id: String) -> AudioStreamWAV:
 	if _tone_cache.has(id):
 		return _tone_cache[id]
@@ -129,7 +135,7 @@ func _get_or_build_ambient(id: String) -> AudioStreamWAV:
 	var key := "music_" + id
 	if _tone_cache.has(key):
 		return _tone_cache[key]
-	# A simple soft pad: low-frequency sine + harmonics, looped.
+	# soft pad: low freq sine + a couple harmonics, looped
 	var base := 0.0
 	match id:
 		"menu":
@@ -156,7 +162,7 @@ func _build_tone(freq: float, dur: float, amp: float, decay: bool) -> AudioStrea
 		if decay:
 			env = clampf(1.0 - t / dur, 0.0, 1.0)
 		else:
-			# short fade-in / fade-out
+			# tiny fade in/out so we dont hear a click on the edges
 			env = clampf(min(t * 20.0, (dur - t) * 20.0), 0.0, 1.0)
 		var v: float = sin(t * TAU * freq) * amp * env
 		var s: int = int(clampf(v, -1.0, 1.0) * 32767.0)
@@ -198,13 +204,13 @@ func _build_pad(freqs: Array, dur: float, amp: float) -> AudioStreamWAV:
 	bytes.resize(sample_count * 2)
 	for i in range(sample_count):
 		var t := float(i) / sample_rate
-		# slow wow
+		# slow wow so it doesnt sound completely dead
 		var wow := 1.0 + 0.005 * sin(t * TAU * 0.3)
 		var v := 0.0
 		for f in freqs:
 			v += sin(t * TAU * float(f) * wow)
 		v = (v / float(freqs.size())) * amp
-		# gentle fade at very start / end to avoid loop click
+		# fade the very start/end so the loop doesnt click
 		var fade := clampf(min(t * 4.0, (dur - t) * 4.0), 0.0, 1.0)
 		v *= fade
 		var s: int = int(clampf(v, -1.0, 1.0) * 32767.0)

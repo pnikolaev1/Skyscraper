@@ -35,7 +35,7 @@ func _make_card(category: String, item: Dictionary) -> Control:
 	v.alignment = BoxContainer.ALIGNMENT_CENTER
 	card.add_child(v)
 
-	# Preview swatch
+	# preview swatch
 	var swatch := _make_swatch(category, item)
 	v.add_child(swatch)
 
@@ -86,7 +86,7 @@ func _make_swatch(category: String, item: Dictionary) -> Control:
 	match category:
 		"skin":
 			swatch.color = Color(data.get("base", Color.GRAY))
-			# add an accent overlay
+			# accent stripe across the top
 			var accent := ColorRect.new()
 			accent.color = Color(data.get("accent", Color.WHITE))
 			accent.size = Vector2(180, 12)

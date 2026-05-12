@@ -1,8 +1,9 @@
 extends CanvasLayer
 class_name HUD
 
-## Gameplay HUD. Score top-left, combo top-centre, stability/lives top-right,
-## height bottom-centre, hazard banner side, intro overlay for level mode.
+# the in-game HUD.
+# score top-left, combo center, stability/lives top-right, height at the bottom,
+# hazard banner slides in from the side, intro overlay for level mode
 
 signal pause_requested
 
@@ -48,7 +49,7 @@ func _show_intro(text: String) -> void:
 	intro_text.text = text
 	intro_overlay.visible = true
 	intro_overlay.modulate.a = 0.0
-	# Bind the tween to intro_overlay (PROCESS_MODE_ALWAYS) so it animates even when paused.
+	# tween bound to intro_overlay (always-on) so it animates while the tree is paused
 	var t := intro_overlay.create_tween()
 	t.tween_property(intro_overlay, "modulate:a", 1.0, 0.3)
 	get_tree().paused = true
@@ -62,14 +63,14 @@ func _hide_intro() -> void:
 	)
 
 func on_score_changed(points: int, total: int) -> void:
-	# tween the displayed score up to total
+	# count up animation
 	var start := _score_displayed
 	var tween := create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tween.tween_method(func(v: float):
 		_score_displayed = int(round(v))
 		score_label.text = "%d" % _score_displayed
 	, float(start), float(total), 0.35)
-	# small pop
+	# lil pop
 	score_label.scale = Vector2(1.15, 1.15)
 	create_tween().tween_property(score_label, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
@@ -93,6 +94,7 @@ func on_combo_changed(new_combo: int) -> void:
 
 func on_stability_changed(value: int) -> void:
 	stability_bar.value = value
+	# color shifts as it gets dangerous
 	var col := Color.GREEN
 	if value < 60:
 		col = Color(0.95, 0.78, 0.20)

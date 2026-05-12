@@ -1,7 +1,7 @@
 extends HazardBase
 class_name FloorSwingHazard
 
-## Active pendulum on the rope. Drives the floor swing amplitude on the crane.
+# rocks the floor on the rope like a pendulum. crane handles the math
 
 func _on_activate() -> void:
 	if crane:

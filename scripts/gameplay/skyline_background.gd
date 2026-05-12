@@ -1,8 +1,9 @@
 extends CanvasLayer
 class_name SkylineBackground
 
-## Procedural parallax skyline. Three layers of building silhouettes scroll at
-## different speeds, with a sky gradient that interpolates over tower height.
+# procedural parallax skyline.
+# 3 layers of building silhouettes that move at different speeds, plus a sky
+# gradient that fades from day to night as the tower grows
 
 @onready var sky_gradient: ColorRect = $SkyRect
 @onready var sun: ColorRect = $Sun
@@ -18,7 +19,7 @@ var skyline_data: Dictionary = {
 	"sun": Color(1.0, 0.95, 0.78),
 	"mood": "day"
 }
-var blend_target: float = 0.0  # for height-based mood shift
+var blend_target: float = 0.0  # how dark we want to go based on height
 var current_blend: float = 0.0
 var night_data: Dictionary = {
 	"top": Color(0.04, 0.05, 0.14),
@@ -43,12 +44,12 @@ func _ready() -> void:
 func setup(p_skyline: Dictionary) -> void:
 	skyline_data = p_skyline
 	_apply_sky()
-	# Adjust whether stars are visible by default
+	# stars on by default if the skyline is already a night theme
 	stars.modulate.a = 1.0 if String(p_skyline.get("mood", "day")) == "night" else 0.0
 
 func set_height_blend(h: int) -> void:
-	# Every 10 floors -> 0.5 toward "sunset". Every 20 -> 1.0 toward night.
-	# This is a single 0..1 blend toward `night_data`.
+	# every 10 floors -> ~0.4 toward night, every 25 -> full night.
+	# its a single 0..1 blend toward night_data
 	blend_target = clampf(float(h) / 25.0, 0.0, 1.0)
 
 func _process(delta: float) -> void:
@@ -60,7 +61,7 @@ func _apply_sky() -> void:
 	var top: Color = (Color(skyline_data.get("top"))).lerp(Color(night_data["top"]), t)
 	var bot: Color = (Color(skyline_data.get("bottom"))).lerp(Color(night_data["bottom"]), t)
 	var sun_c: Color = (Color(skyline_data.get("sun"))).lerp(Color(night_data["sun"]), t)
-	# Build a simple gradient by recoloring a vertical gradient texture procedurally
+	# build a simple vertical gradient texture on the fly
 	var grad := Gradient.new()
 	grad.set_color(0, top)
 	grad.set_color(1, bot)
@@ -71,20 +72,21 @@ func _apply_sky() -> void:
 	tex.width = 8
 	tex.height = 256
 	if sky_gradient.has_method("set_texture"):
-		# ColorRect doesn't support texture: use TextureRect-like with shader trick — but our scene uses TextureRect alternative.
+		# colorrect cant take a texture so we cheat with a sibling TextureRect
 		pass
-	# Instead, since sky_gradient is a ColorRect, just blend the bottom and use a child TextureRect for gradient
+	# since sky_gradient is just a colorrect, blend the bottom color and let
+	# the gradient texturerect handle the actual fade
 	sky_gradient.color = bot
 	var tex_rect: TextureRect = $SkyTex
 	tex_rect.texture = tex
 	sun.color = sun_c
-	# stars fade in as we approach night
+	# stars fade in once we're past about halfway to night
 	stars.modulate.a = clampf((t - 0.5) * 2.0, 0.0, 1.0)
-	# clouds fade as we go night
+	# clouds fade out the other way
 	clouds.modulate.a = clampf(1.0 - t * 1.5, 0.0, 1.0)
 
 func _build_buildings() -> void:
-	# Far layer: distant tall silhouettes
+	# far layer = small distant silhouettes
 	_build_layer(far_layer, 36, 1700.0, 40.0, 120.0, 0.55, Color(0.28, 0.40, 0.62))
 	_build_layer(mid_layer, 28, 1700.0, 80.0, 220.0, 0.70, Color(0.16, 0.26, 0.45))
 	_build_layer(near_layer, 18, 1700.0, 140.0, 340.0, 0.85, Color(0.08, 0.16, 0.30))
@@ -101,7 +103,7 @@ func _build_layer(parent: Node2D, count: int, span: float, h_min: float, h_max: 
 		rect.size = Vector2(w, h)
 		rect.position = Vector2(x, 0.0)
 		parent.add_child(rect)
-		# windows on the building
+		# stick some windows on it
 		if h > 100:
 			var win_count := int(h / 28)
 			for i in range(win_count):
@@ -145,8 +147,8 @@ func _build_clouds() -> void:
 		tween.tween_callback(func(): c.position.x = -260.0)
 
 func apply_parallax(cam_y: float) -> void:
-	# cam_y is camera's y in world. When the gameplay camera rises, its y decreases.
-	# In screen space we want the skyline to slide downward, revealing more sky.
+	# cam_y is the camera y in world coords. when the camera rises its y goes down.
+	# we want the skyline to slide downward on screen, revealing more sky above
 	var baseline := 0.0
 	var dy := cam_y - baseline
 	var rise_offset := -dy

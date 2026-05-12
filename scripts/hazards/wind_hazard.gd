@@ -1,8 +1,8 @@
 extends HazardBase
 class_name WindHazard
 
-## Repeating horizontal wind that modulates the swing amplitude of the hanging floor.
-## Spawns leaf particles drifting across the screen.
+# horizontal wind that modulates the rope swing on the hanging floor.
+# also spawns leaf particles drifting across the screen
 
 var _dir: int = 1
 var _particle_root: Node2D
@@ -24,15 +24,15 @@ func _on_deactivate() -> void:
 		_particle_root = null
 
 func _spawn_particles() -> void:
-	# Add particles to the fog (screen-space) layer so they drift across the screen
-	# regardless of camera position.
+	# put particles on the fog (screen-space) layer so they drift across the
+	# screen no matter where the camera is
 	var root := Node2D.new()
 	root.z_index = 20
 	var host: Node = fog_layer if fog_layer else get_tree().current_scene
 	host.add_child(root)
 	root.name = "WindParticles"
 	_particle_root = root
-	# A bunch of small drifting rects
+	# a bunch of small drifting rects (poor mans particles)
 	for i in range(30):
 		var leaf := ColorRect.new()
 		var hue := randf_range(0.10, 0.18)

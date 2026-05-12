@@ -1,6 +1,8 @@
 extends Control
 class_name LevelSelect
 
+# grid of cards, one per level. shows best score + stars
+
 @onready var grid: GridContainer = $Center/Scroll/Grid
 @onready var back_btn: Button = $Back
 @onready var fade: ColorRect = $Fade

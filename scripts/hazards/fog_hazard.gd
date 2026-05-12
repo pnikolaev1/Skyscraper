@@ -1,8 +1,8 @@
 extends HazardBase
 class_name FogHazard
 
-## Temporary visibility reduction via an overlay. Provides fairness Pings every 2s at the
-## crane hook and the centre of the tower's top floor.
+# fog overlay that kills visibility for a bit. fairness pings every 2s at the
+# crane hook and the center of the top floor so its not totally blind
 
 var _fog_rect: ColorRect
 var _ping_timer: float = 0.0
@@ -10,8 +10,8 @@ var _ping_interval: float = 2.0
 
 func _on_activate() -> void:
 	_ping_interval = Config.get_f("fog_ping_interval", 2.0)
-	_ping_timer = 0.2  # quick first ping
-	# Create fog overlay
+	_ping_timer = 0.2  # quick first ping so player isnt blind for 2s
+	# make the fog overlay
 	if fog_layer:
 		var rect := ColorRect.new()
 		var alpha := clampf(0.35 + 0.10 * float(intensity), 0.35, 0.75)
@@ -44,12 +44,12 @@ func _on_tick(delta: float) -> void:
 func _emit_pings() -> void:
 	if not ping_layer:
 		return
-	# Ping at crane hook
+	# ping at crane hook
 	if crane and is_instance_valid(crane):
 		var hook := crane.get_node_or_null("Hook")
 		if hook:
 			_spawn_ping(hook.global_position, Color(1.0, 0.95, 0.30))
-	# Ping at top floor center
+	# ping at top floor center
 	if tower and is_instance_valid(tower):
 		var top := tower.get_top_floor()
 		if top:

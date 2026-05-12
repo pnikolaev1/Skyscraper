@@ -1,7 +1,7 @@
 extends Node
 class_name HazardBase
 
-## Abstract base for hazards. Subclasses override _on_activate / _on_deactivate / _on_tick.
+# base class for hazards. subclasses override _on_activate / _on_deactivate / _on_tick
 
 signal activated(intensity: int, duration: float)
 signal deactivated
@@ -10,7 +10,7 @@ var is_active: bool = false
 var intensity: int = 1
 var remaining: float = 0.0
 
-# Externals
+# refs passed in from outside
 var crane: Crane
 var tower: Tower
 var fog_layer: CanvasLayer

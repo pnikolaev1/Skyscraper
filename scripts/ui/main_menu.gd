@@ -21,10 +21,10 @@ func _ready() -> void:
 
 	settings_panel.visible = false
 	_wire_settings()
-	# Background tower autoplay
+	# little tower in the bg that grows slowly
 	_animate_bg_tower()
 
-	# Fade in
+	# fade in
 	fade.color = Color(0, 0, 0, 1)
 	create_tween().tween_property(fade, "color:a", 0.0, 0.45)
 
@@ -54,7 +54,7 @@ func _wire_settings() -> void:
 	close.pressed.connect(func(): settings_panel.visible = false)
 
 func _animate_bg_tower() -> void:
-	# Spawn a few stacked floors slowly growing.
+	# stack a few floors way off to the side, slowly drift them upward
 	var rng := RandomNumberGenerator.new()
 	rng.randomize()
 	var y := 980.0

@@ -1,8 +1,9 @@
 extends RefCounted
 class_name CosmeticLibrary
 
-## A static catalogue of all cosmetics. Keeps them in code so we don't risk missing-resource
-## warnings from .tres references; SaveSystem tracks which are unlocked by id.
+# static catalogue of every cosmetic.
+# keeping them in code (not .tres files) avoids missing-resource warnings.
+# SaveSystem tracks which ones are unlocked by id
 
 const SKINS := [
 	{

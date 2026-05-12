@@ -1,5 +1,5 @@
 extends Node
-## Persistent storage: settings, unlocks, selected cosmetics, level scores, leaderboard.
+# everything we save to disk - settings, unlocks, scores etc
 
 const SAVE_PATH := "user://savegame.json"
 const LEADERBOARD_MAX := 10
@@ -47,7 +47,7 @@ func load_data() -> void:
 	f.close()
 	var parsed: Variant = JSON.parse_string(txt)
 	if typeof(parsed) == TYPE_DICTIONARY:
-		# merge with defaults so new keys are populated for legacy saves
+		# merge with defaults so old saves dont blow up when we add new keys
 		var merged := _default_data()
 		for k in parsed.keys():
 			merged[k] = parsed[k]
@@ -62,7 +62,7 @@ func save_data() -> void:
 	f.store_string(JSON.stringify(data, "\t"))
 	f.close()
 
-# ---------- Settings ----------
+# ----- settings -----
 func set_music_vol(v: float) -> void:
 	data["settings"]["music_vol"] = clampf(v, 0.0, 1.0)
 	save_data()
@@ -77,7 +77,7 @@ func get_music_vol() -> float:
 func get_sfx_vol() -> float:
 	return float(data["settings"].get("sfx_vol", 0.9))
 
-# ---------- Unlocks ----------
+# ----- unlocks -----
 func is_unlocked(item_id: String) -> bool:
 	return bool(data["unlocks"].get(item_id, false))
 
@@ -95,7 +95,7 @@ func set_selected(category: String, item_id: String) -> void:
 	data["selected"][category] = item_id
 	save_data()
 
-# ---------- Level scores ----------
+# ----- level scores -----
 func record_level_result(level_id: String, score: int, stars: int) -> Dictionary:
 	var existing: Dictionary = data["level_scores"].get(level_id, {"best_score": 0, "stars": 0})
 	var new_best: bool = score > int(existing.get("best_score", 0))
@@ -109,7 +109,7 @@ func record_level_result(level_id: String, score: int, stars: int) -> Dictionary
 func get_level_score(level_id: String) -> Dictionary:
 	return data["level_scores"].get(level_id, {"best_score": 0, "stars": 0})
 
-# ---------- Endless leaderboard ----------
+# ----- endless leaderboard (local only for now) -----
 func add_endless_score(score: int, height: int) -> Dictionary:
 	var entry := {
 		"score": score,
